@@ -6,7 +6,8 @@ function process(node) {
     // 3 = text node
     case 3:
 
-      cyberify(node);
+      console.log();
+      cyberify(node,getFont(node.parentNode));
       break;
 
     // 1 = element, 9 = document, 11 = fragment
@@ -26,30 +27,49 @@ function process(node) {
 
 }
 
+// Get computed font as fallback for sites that don't allow external font-faces
+function getFont(node) {
+
+  var style;
+
+  try {
+    style = getComputedStyle(node.parentNode);
+  } catch (e) {
+    return "";
+  }
+
+  if (style && style.fontFamily) {
+    return style.fontFamily.trim();
+  }
+
+  return "";
+
+}
+
 // Either starting the string or preceded by a space
 var ex1 = /^cyber(?=(\s|-?[a-z]))/ig,
     ex2 = /[^a-z]cyber(?=(\s|-?[a-z]))/ig;
 
-function cyberify(n) {
+function cyberify(n,fallback) {
 
   var tx = n.nodeValue;
 
   if (tx.match(ex1) || tx.match(ex2)) {
-    wrapMatches(n);
+    wrapMatches(n,fallback);
   }
 
 }
 
 // Along the lines of http://james.padolsey.com/javascript/replacing-text-in-the-dom-its-not-that-simple/
-function wrapMatches(textNode) {
+function wrapMatches(textNode,fallback) {
 
   var temp = document.createElement("div");
 
   temp.innerHTML = textNode.nodeValue.replace(ex2,function(match){
-                                       return mark(match,true);
+                                       return mark(match,fallback,true);
                                      })
                                      .replace(ex1,function(match){
-                                       return mark(match);
+                                       return mark(match,fallback);
                                      });
 
   while (temp.firstChild) {
@@ -60,12 +80,15 @@ function wrapMatches(textNode) {
 
 }
 
-function mark(match,space) {
+function mark(match,fallback,space) {
 
   var pre = space ? match[0] : "",
-      inner = space ? match.slice(1) : match;
+      inner = space ? match.slice(1) : match,
+      font = fallback ? "Audiowide, " + fallback : "Audiowide";
 
-  return pre + "<mark style=\"font-family: Audiowide; background-color: transparent; color: inherit; font-size: inherit; padding: 0; margin: 0;\">" + inner + "</mark>";
+  console.log(font);
+
+  return pre + "<mark style=\"background-color: transparent; color: inherit; font-size: inherit; padding: 0; margin: 0; font-family: " + font + "\">" + inner + "</mark>";
 }
 
 // Add a stylesheet for the Audiowide font

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Cyberextension",
-  "version": "0.1",
+  "version": "0.2",
   "description": "Changes the font of all occurrences of the prefix \"cyber-\" to something more appropriate.",
   "content_scripts": 
   [
