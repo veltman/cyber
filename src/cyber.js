@@ -6,7 +6,6 @@ function process(node) {
     // 3 = text node
     case 3:
 
-      console.log();
       cyberify(node,getFont(node.parentNode));
       break;
 
@@ -85,8 +84,6 @@ function mark(match,fallback,space) {
   var pre = space ? match[0] : "",
       inner = space ? match.slice(1) : match,
       font = fallback ? "Audiowide, " + fallback : "Audiowide";
-
-  console.log(font);
 
   return pre + "<mark style=\"background-color: transparent; color: inherit; font-size: inherit; padding: 0; margin: 0; font-family: " + font + "\">" + inner + "</mark>";
 }
